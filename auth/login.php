@@ -63,6 +63,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="form-group">
                     <label for="password">Kata Sandi</label>
                     <input type="password" id="password" name="password" placeholder="Masukkan kata sandi" required>
+                    <div style="text-align: right; margin-top: 5px;">
+                        <a href="forgot_password.php" style="font-size: 0.8rem; color: hsl(var(--primary)); text-decoration: none;">Lupa Kata Sandi?</a>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-block">Masuk</button>
