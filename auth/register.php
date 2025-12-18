@@ -15,18 +15,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($password !== $confirm_password) {
         $error = "Kata sandi tidak cocok.";
     } else {
-        // Check if username exists
+        // Check if username exists in pengguna
         $stmt = $pdo->prepare("SELECT id FROM pengguna WHERE nama_pengguna = ?");
         $stmt->execute([$username]);
         if ($stmt->fetch()) {
             $error = "Nama pengguna sudah digunakan.";
         } else {
-            // Register User
+            // Register User (Member always hashed)
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-            $role = 'anggota'; // Default role
+            
+            // Note: 'role' column removed from schema for 'pengguna' table in this version based on your separation request,
+            // OR if it exists, default is fine. But 'database.sql' above removed 'peran' from 'pengguna' inserts?
+            // Checking database.sql: Table `pengguna` structure: `id`, `nama_pengguna`, `kata_sandi`, `nama_lengkap`, (`dibuat_pada`). 
+            // Wait, I removed `peran` from `pengguna` table in the new `database.sql` logic! 
+            // Let's explicitly insert into strictly defined columns.
 
-            $stmt = $pdo->prepare("INSERT INTO pengguna (nama_pengguna, kata_sandi, nama_lengkap, peran) VALUES (?, ?, ?, ?)");
-            if ($stmt->execute([$username, $hashed_password, $full_name, $role])) {
+            $stmt = $pdo->prepare("INSERT INTO pengguna (nama_pengguna, kata_sandi, nama_lengkap) VALUES (?, ?, ?)");
+            if ($stmt->execute([$username, $hashed_password, $full_name])) {
                 $success = "Pendaftaran berhasil! Anda sekarang dapat masuk.";
             } else {
                 $error = "Pendaftaran gagal. Silakan coba lagi.";

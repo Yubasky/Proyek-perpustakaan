@@ -10,15 +10,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($username) || empty($password)) {
         $error = "Harap isi semua kolom.";
     } else {
-        // Updated table: pengguna, column: nama_pengguna
+        // Query: Tabel pengguna (Member Only now)
         $stmt = $pdo->prepare("SELECT * FROM pengguna WHERE nama_pengguna = ?");
         $stmt->execute([$username]);
         $user = $stmt->fetch();
 
+        // Member still uses encryption
         if ($user && password_verify($password, $user['kata_sandi'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['nama_pengguna'];
-            $_SESSION['role'] = $user['peran'];
+            $_SESSION['role'] = 'anggota'; // Default role for table pengguna
             $_SESSION['full_name'] = $user['nama_lengkap'];
             
             header("Location: " . BASE_URL . "index.php");
@@ -44,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="auth-card">
             <div class="auth-header">
                 <h1>Simbad</h1>
-                <p>Sistem Manajemen Perpustakaan</p>
+                <p>Login Anggota</p>
             </div>
             
             <?php if ($error): ?>
